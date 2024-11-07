@@ -92,7 +92,7 @@ public static class CommonUtils
         return message;
     }
 
-    public static byte[] GetRegisterAssistanceMessage(
+    public static byte[] GetRegisterAgentMessage(
         string provider,
         string assistance,
         long nonce,

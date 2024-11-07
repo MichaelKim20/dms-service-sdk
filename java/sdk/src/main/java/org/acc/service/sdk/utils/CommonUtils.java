@@ -70,7 +70,7 @@ public class CommonUtils {
         return Hash.sha3(Numeric.hexStringToByteArray(value));
     }
 
-    public static byte[] getRegisterAssistanceMessage(
+    public static byte[] getRegisterAgentMessage(
             String provider,
             String assistance,
             long nonce,

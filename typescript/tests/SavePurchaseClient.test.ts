@@ -15,9 +15,19 @@ function getPurchaseId(): string {
 
 describe("Test of ProviderClient", function () {
     this.timeout(1000 * 60 * 5);
+    const network: NetWorkType = NetWorkType.localhost;
+    const AccessKeys: Map<number, string> = new Map([
+        [NetWorkType.testnet, "0x8acceea5937a8e4bb07abc93a1374264dd9bd2fc384c979717936efe63367276"],
+        [NetWorkType.localhost, "0x2c93e943c0d7f6f1a42f53e116c52c40fe5c1b428506dc04b290f2a77580a342"],
+    ]);
+    const AssetAddresses: Map<number, string> = new Map([
+        [NetWorkType.testnet, "0x85EeBb1289c0d0C17eFCbadB40AeF0a1c3b46714"],
+        [NetWorkType.localhost, "0x4501F7aF010Cef3DcEaAfbc7Bfb2B39dE57df54d"],
+    ]);
+
     let savePurchaseClient: SavePurchaseClient;
-    const privateKeyOfCollector = "0x8acceea5937a8e4bb07abc93a1374264dd9bd2fc384c979717936efe63367276";
-    const addressOfAsset = "0x85EeBb1289c0d0C17eFCbadB40AeF0a1c3b46714";
+    const privateKeyOfCollector = AccessKeys.get(network) || "";
+    const addressOfAsset = AssetAddresses.get(network) || "";
     const shopId = "0x0001be96d74202df38fd21462ffcef10dfe0fcbd7caa3947689a3903e8b6b874";
     const userAccount = "0x64D111eA9763c93a003cef491941A011B8df5a49";
     const userPhone = "";
@@ -26,7 +36,7 @@ describe("Test of ProviderClient", function () {
     let balance2: BigNumber;
 
     before(() => {
-        savePurchaseClient = new SavePurchaseClient(NetWorkType.testnet, privateKeyOfCollector, addressOfAsset);
+        savePurchaseClient = new SavePurchaseClient(network, privateKeyOfCollector, addressOfAsset);
     });
 
     it("Waiting...", async () => {

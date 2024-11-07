@@ -10,9 +10,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class CommonUtilsTest {
     @Test
-    void getRegisterAssistanceMessage() {
+    void getRegisterAgentMessage() {
         try {
-            byte[] message = CommonUtils.getRegisterAssistanceMessage(
+            byte[] message = CommonUtils.getRegisterAgentMessage(
                     "0x64D111eA9763c93a003cef491941A011B8df5a49",
                     "0x3FE8D00143bd0eAd2397D48ba0E31E5E1268dBfb",
                     45,
@@ -26,7 +26,7 @@ class CommonUtilsTest {
     void signMessage() {
         try {
             ECKeyPair keyPair = ECKeyPair.create(new BigInteger("70438bc3ed02b5e4b76d496625cb7c06d6b7bf4362295b16fdfe91a046d4586c", 16));
-            byte[] message = CommonUtils.getRegisterAssistanceMessage(
+            byte[] message = CommonUtils.getRegisterAgentMessage(
                     "0x64D111eA9763c93a003cef491941A011B8df5a49",
                     "0x3FE8D00143bd0eAd2397D48ba0E31E5E1268dBfb",
                     45,

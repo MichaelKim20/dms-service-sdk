@@ -14,7 +14,8 @@
         "formatting:write": "prettier '**/*.{json,sol,ts,js}' --write",
         "test:ProviderClient": "rimraf ./dist && tsc && mocha -r ts-node/register tests/ProviderClient.test.ts",
         "test:PaymentClient": "rimraf ./dist && tsc && mocha -r ts-node/register tests/PaymentClient.test.ts",
-        "test:SavePurchaseClient": "rimraf ./dist && tsc && mocha -r ts-node/register tests/SavePurchaseClient.test.ts"
+        "test:SavePurchaseClient": "rimraf ./dist && tsc && mocha -r ts-node/register tests/SavePurchaseClient.test.ts",
+        "test:SettlementClient": "rimraf ./dist && tsc && mocha -r ts-node/register tests/SettlementClient.test.ts"
     },
     "repository": {
         "type": "git",
