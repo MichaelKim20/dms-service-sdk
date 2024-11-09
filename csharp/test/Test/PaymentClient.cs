@@ -10,6 +10,8 @@ using Utils;
 
 public class PaymentClientTest
 {
+    private NetWorkType network  = NetWorkType.TestNet;
+    private Dictionary<NetWorkType, string> AccessKeys;
     private PaymentClient paymentClient;
     private PaymentClientForUser userClient;
     private PaymentClientForShop shopClient;
@@ -21,14 +23,16 @@ public class PaymentClientTest
 
     public PaymentClientTest()
     {
-        string privateKeyForPayment = "0x8acceea5937a8e4bb07abc93a1374264dd9bd2fc384c979717936efe63367276";
-        paymentClient = new PaymentClient(NetWorkType.TestNet, privateKeyForPayment);
+        AccessKeys = new Dictionary<NetWorkType, string>();
+        AccessKeys.Add(NetWorkType.TestNet, "0x8acceea5937a8e4bb07abc93a1374264dd9bd2fc384c979717936efe63367276");
+        AccessKeys.Add(NetWorkType.LocalHost, "0x2c93e943c0d7f6f1a42f53e116c52c40fe5c1b428506dc04b290f2a77580a342");
+        paymentClient = new PaymentClient(network, AccessKeys[network]);
         listener = new TestEventListener();
         collector = new TaskEventCollector(paymentClient, listener);
         collector.Start();
-        userClient = new PaymentClientForUser(NetWorkType.TestNet, 
+        userClient = new PaymentClientForUser(network, 
             "0x70438bc3ed02b5e4b76d496625cb7c06d6b7bf4362295b16fdfe91a046d4586c");
-        shopClient = new PaymentClientForShop(NetWorkType.TestNet,
+        shopClient = new PaymentClientForShop(network,
             "0xa237d68cbb66fd5f76e7b321156c46882546ad87d662dec8b82703ac31efbf0a",
             "0x0001be96d74202df38fd21462ffcef10dfe0fcbd7caa3947689a3903e8b6b874");
     }

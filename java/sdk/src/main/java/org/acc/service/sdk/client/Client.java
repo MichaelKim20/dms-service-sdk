@@ -2,12 +2,14 @@ package org.acc.service.sdk.client;
 
 import org.acc.service.sdk.data.NetWorkType;
 import org.acc.service.sdk.data.UserBalance;
+import org.acc.service.sdk.data.settlement.ChainInfo;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.math.BigInteger;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
@@ -190,5 +192,71 @@ public class Client {
         HttpURLConnection conn = getHttpURLConnection(uri, "GET");
         JSONObject data = getJSONObjectResponse(conn);
         return data.getInt("nonce");
+    }
+
+    private ChainInfo _mainChainInfo;
+    private ChainInfo _sideChainInfo;
+
+    public long getShopNonceOf(@NotNull String account) throws Exception {
+        URI uri = new URI(relayEndpoint + "/v1/shop/nonce/" + account.trim());
+        HttpURLConnection conn = getHttpURLConnection(uri, "GET");
+        JSONObject data = getJSONObjectResponse(conn);
+        return data.getInt("nonce");
+    }
+
+    public ChainInfo getChainInfoOfMainChain() throws Exception {
+        if (_mainChainInfo != null) return _mainChainInfo;
+        URI uri = new URI(relayEndpoint + "/v1/chain/main/info/");
+        HttpURLConnection conn = getHttpURLConnection(uri, "GET");
+        JSONObject data = getJSONObjectResponse(conn);
+        _mainChainInfo = ChainInfo.fromJSONObject(data);
+        return _mainChainInfo;
+    }
+
+    public long getChainIdOfMainChain() throws Exception {
+        ChainInfo info = getChainInfoOfMainChain();
+        return info.network.chainId;
+    }
+
+    public long getNonceOfMainChainToken(@NotNull String account) throws Exception {
+        URI uri = new URI(relayEndpoint + "/v1/token/main/nonce/" + account.trim());
+        HttpURLConnection conn = getHttpURLConnection(uri, "GET");
+        JSONObject data = getJSONObjectResponse(conn);
+        return data.getInt("nonce");
+    }
+
+    public BigInteger getBalanceOfMainChainToken(@NotNull String account) throws Exception {
+        URI uri = new URI(relayEndpoint + "/v1/token/main/balance/" + account.trim());
+        HttpURLConnection conn = getHttpURLConnection(uri, "GET");
+        JSONObject data = getJSONObjectResponse(conn);
+        return data.getBigInteger("balance");
+    }
+
+    public ChainInfo getChainInfoOfSideChain() throws Exception {
+        if (_sideChainInfo != null) return _sideChainInfo;
+        URI uri = new URI(relayEndpoint + "/v1/chain/side/info/");
+        HttpURLConnection conn = getHttpURLConnection(uri, "GET");
+        JSONObject data = getJSONObjectResponse(conn);
+        _sideChainInfo = ChainInfo.fromJSONObject(data);
+        return _sideChainInfo;
+    }
+
+    public long getChainIdOfSideChain() throws Exception {
+        ChainInfo info = getChainInfoOfSideChain();
+        return info.network.chainId;
+    }
+
+    public long getNonceOfSideChainToken(@NotNull String account) throws Exception {
+        URI uri = new URI(relayEndpoint + "/v1/token/side/nonce/" + account.trim());
+        HttpURLConnection conn = getHttpURLConnection(uri, "GET");
+        JSONObject data = getJSONObjectResponse(conn);
+        return data.getInt("nonce");
+    }
+
+    public BigInteger getBalanceOfSideChainToken(@NotNull String account) throws Exception {
+        URI uri = new URI(relayEndpoint + "/v1/token/side/balance/" + account.trim());
+        HttpURLConnection conn = getHttpURLConnection(uri, "GET");
+        JSONObject data = getJSONObjectResponse(conn);
+        return data.getBigInteger("balance");
     }
 }

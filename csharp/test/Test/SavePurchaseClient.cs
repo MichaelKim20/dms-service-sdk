@@ -7,20 +7,39 @@ using System.Numerics;
 
 public class SavePurchaseClientTests
 {
-    private SavePurchaseClient client = new SavePurchaseClient(
-        NetWorkType.TestNet,
-        "0x8acceea5937a8e4bb07abc93a1374264dd9bd2fc384c979717936efe63367276",
-        "0x85EeBb1289c0d0C17eFCbadB40AeF0a1c3b46714"
-        );
-    string shopId = "0x0001be96d74202df38fd21462ffcef10dfe0fcbd7caa3947689a3903e8b6b874";
-    string userAccount = "0x64D111eA9763c93a003cef491941A011B8df5a49";
-    string userPhone = "";
+    private NetWorkType network  = NetWorkType.TestNet;
+    private Dictionary<NetWorkType, string> AccessKeys;
+    private Dictionary<NetWorkType, string> AssetAddresses;
+    private SavePurchaseClient client;
+    private string shopId;
+    private string userAccount;
+    private string userPhone;
 
     private UserBalanceData balance1;
     private UserBalanceData balance2;
 
     private string purchaseId;
     private long timestamp;
+
+    public SavePurchaseClientTests()
+    {
+        AccessKeys = new Dictionary<NetWorkType, string>();
+        AccessKeys.Add(NetWorkType.TestNet, "0x8acceea5937a8e4bb07abc93a1374264dd9bd2fc384c979717936efe63367276");
+        AccessKeys.Add(NetWorkType.LocalHost, "0x2c93e943c0d7f6f1a42f53e116c52c40fe5c1b428506dc04b290f2a77580a342");
+
+        AssetAddresses = new Dictionary<NetWorkType, string>();
+        AssetAddresses.Add(NetWorkType.TestNet, "0x85EeBb1289c0d0C17eFCbadB40AeF0a1c3b46714");
+        AssetAddresses.Add(NetWorkType.LocalHost, "0x4501F7aF010Cef3DcEaAfbc7Bfb2B39dE57df54d");
+
+        client = new SavePurchaseClient(
+            network,
+            AccessKeys[network],
+            AssetAddresses[network]
+        );
+        shopId = "0x0001be96d74202df38fd21462ffcef10dfe0fcbd7caa3947689a3903e8b6b874";
+        userAccount = "0x64D111eA9763c93a003cef491941A011B8df5a49";
+        userPhone = "";
+    }
 
     [SetUp]
     public void Setup()

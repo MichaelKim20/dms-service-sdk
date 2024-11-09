@@ -1,5 +1,5 @@
 import { HTTPClient } from "../network/HTTPClient";
-import { IEndpoints, IUserBalance, NetWorkType } from "../types";
+import { IChainInfo, IEndpoints, IUserBalance, NetWorkType } from "../types";
 
 import URI from "urijs";
 
@@ -153,5 +153,144 @@ export class Client {
             throw new Error(response.data.error?.message);
         }
         return Number(response.data.data.nonce);
+    }
+
+    public async getShopNonceOf(account: string): Promise<number> {
+        const agent = new HTTPClient({});
+        const response = await agent.get(
+            URI(this.endpoints.relay).directory("/v1/shop/nonce/").filename(account).toString()
+        );
+        if (response.data.code !== 0) {
+            throw new Error(response.data.error?.message);
+        }
+        return Number(response.data.data.nonce);
+    }
+
+    private mainChainInfo: IChainInfo | undefined = undefined;
+    public async getChainInfoOfMainChain(): Promise<IChainInfo> {
+        if (this.mainChainInfo !== undefined) return this.mainChainInfo;
+        const agent = new HTTPClient({});
+        const res = await agent.get(URI(this.endpoints.relay).directory("/v1/chain/main/info").toString());
+        if (res.data.code !== 0) {
+            throw new Error(res.data.error?.message);
+        }
+        this.mainChainInfo = {
+            url: res.data.data.url,
+            network: {
+                name: res.data.data.network.name,
+                chainId: res.data.data.network.chainId,
+                ensAddress: res.data.data.network.ensAddress,
+                chainTransferFee: BigNumber.from(res.data.data.network.chainTransferFee),
+                chainBridgeFee: BigNumber.from(res.data.data.network.chainBridgeFee),
+                loyaltyTransferFee: BigNumber.from(res.data.data.network.loyaltyTransferFee),
+                loyaltyBridgeFee: BigNumber.from(res.data.data.network.loyaltyBridgeFee),
+            },
+            contract: {
+                token: res.data.data.contract.token,
+                chainBridge: res.data.data.contract.chainBridge,
+                loyaltyBridge: res.data.data.contract.loyaltyBridge,
+            },
+        };
+        return this.mainChainInfo;
+    }
+
+    /**
+     * 메인체인의 토큰의 Nonce 를 제공한다.
+     */
+    public async getNonceOfMainChainToken(account: string): Promise<BigNumber> {
+        const agent = new HTTPClient({});
+        const response = await agent.get(
+            URI(this.endpoints.relay).directory("/v1/token/main/nonce/").filename(account).toString()
+        );
+        if (response.data.code !== 0) {
+            throw new Error(response.data.error?.message);
+        }
+        return BigNumber.from(response.data.data.nonce);
+    }
+
+    /**
+     * 메인체인의 토큰잔고를 제공한다.
+     */
+    public async getBalanceOfMainChainToken(account: string): Promise<BigNumber> {
+        const agent = new HTTPClient({});
+        const response = await agent.get(
+            URI(this.endpoints.relay).directory("/v1/token/main/balance/").filename(account).toString()
+        );
+        if (response.data.code !== 0) {
+            throw new Error(response.data.error?.message);
+        }
+        return BigNumber.from(response.data.data.balance);
+    }
+
+    /**
+     * 메인체인의 체인아이디를 제공한다.
+     */
+    public async getChainIdOfMainChain(): Promise<number> {
+        const chainInfo = await this.getChainInfoOfMainChain();
+        return Number(chainInfo.network.chainId);
+    }
+
+    private sideChainInfo: IChainInfo | undefined = undefined;
+    public async getChainInfoOfSideChain(): Promise<IChainInfo> {
+        if (this.sideChainInfo !== undefined) return this.sideChainInfo;
+        const agent = new HTTPClient({});
+        const res = await agent.get(URI(this.endpoints.relay).directory("/v1/chain/side/info").toString());
+        if (res.data.code !== 0) {
+            throw new Error(res.data.error?.message);
+        }
+        this.sideChainInfo = {
+            url: res.data.data.url,
+            network: {
+                name: res.data.data.network.name,
+                chainId: res.data.data.network.chainId,
+                ensAddress: res.data.data.network.ensAddress,
+                chainTransferFee: BigNumber.from(res.data.data.network.chainTransferFee),
+                chainBridgeFee: BigNumber.from(res.data.data.network.chainBridgeFee),
+                loyaltyTransferFee: BigNumber.from(res.data.data.network.loyaltyTransferFee),
+                loyaltyBridgeFee: BigNumber.from(res.data.data.network.loyaltyBridgeFee),
+            },
+            contract: {
+                token: res.data.data.contract.token,
+                chainBridge: res.data.data.contract.chainBridge,
+                loyaltyBridge: res.data.data.contract.loyaltyBridge,
+            },
+        };
+        return this.sideChainInfo;
+    }
+
+    /**
+     * 사이드체인의 체인아이디를 제공한다.
+     */
+    public async getChainIdOfSideChain(): Promise<number> {
+        const chainInfo = await this.getChainInfoOfSideChain();
+        return Number(chainInfo.network.chainId);
+    }
+
+    /**
+     * 사이드체인의 토큰의 Nonce 를 제공한다.
+     */
+    public async getNonceOfSideChainToken(account: string): Promise<BigNumber> {
+        const agent = new HTTPClient({});
+        const response = await agent.get(
+            URI(this.endpoints.relay).directory("/v1/token/side/nonce/").filename(account).toString()
+        );
+        if (response.data.code !== 0) {
+            throw new Error(response.data.error?.message);
+        }
+        return BigNumber.from(response.data.data.nonce);
+    }
+
+    /**
+     * 사이드체인의 토큰잔고를 제공한다.
+     */
+    public async getBalanceOfSideChainToken(account: string): Promise<BigNumber> {
+        const agent = new HTTPClient({});
+        const response = await agent.get(
+            URI(this.endpoints.relay).directory("/v1/token/side/balance/").filename(account).toString()
+        );
+        if (response.data.code !== 0) {
+            throw new Error(response.data.error?.message);
+        }
+        return BigNumber.from(response.data.data.balance);
     }
 }

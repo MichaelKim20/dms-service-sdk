@@ -57,7 +57,7 @@ public class ProviderClient extends Client {
      */
     public String setAgent(String account) throws Exception {
         long nonce = this.getLedgerNonceOf(this.credentials.getAddress());
-        byte[] message = CommonUtils.getRegisterAssistanceMessage(
+        byte[] message = CommonUtils.getRegisterAgentMessage(
                 this.credentials.getAddress(),
                 account,
                 nonce,

@@ -1,4 +1,5 @@
 import { BigNumber } from "@ethersproject/bignumber";
+import { BytesLike } from "@ethersproject/bytes";
 
 /**
  * Network Type
@@ -146,4 +147,47 @@ export interface IPurchaseDetail {
     productId: string;
     amount: number;
     providePercent: number;
+}
+
+export enum ShopStatus {
+    INVALID,
+    ACTIVE,
+    INACTIVE,
+}
+
+export interface ShopData {
+    shopId: BytesLike;
+    name: string;
+    currency: string;
+    account: string; // 상점주의 지갑주소
+    delegator: string;
+    providedAmount: BigNumber; // 제공된 포인트 총량
+    usedAmount: BigNumber; // 사용된 포인트 총량
+    settledAmount: BigNumber; // 사용된 포인트 - 제공된 포인트
+    collectedAmount: BigNumber; //
+    refundedAmount: BigNumber; // 정산이 완료된 포인트 총량
+    status: ShopStatus;
+}
+
+export interface ShopRefundableData {
+    refundableAmount: BigNumber;
+    refundableToken: BigNumber;
+}
+
+export interface IChainInfo {
+    url: string;
+    network: {
+        name: string;
+        chainId: number;
+        ensAddress: string;
+        chainTransferFee: BigNumber;
+        chainBridgeFee: BigNumber;
+        loyaltyTransferFee: BigNumber;
+        loyaltyBridgeFee: BigNumber;
+    };
+    contract: {
+        token: string;
+        chainBridge: string;
+        loyaltyBridge: string;
+    };
 }

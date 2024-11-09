@@ -1,4 +1,4 @@
-using System.Net;
+using System.Numerics;
 using Acc.Service.Sdk.Utils;
 using Newtonsoft.Json.Linq;
 
@@ -189,11 +189,85 @@ public class Client
         return Convert.ToInt64(jObject.GetValue("nonce")!.ToString());
     }
 
+    public async Task<long >GetShopNonceOf(string account)
+    {
+        var response = await GetAsync($"{RelayEndpoint}/v1/shop/nonce/{account.Trim()}");
+        var jObject = ParseResponseToJObject(response);
+        return Convert.ToInt64(jObject.GetValue("nonce")!.ToString());
+    }
+
     public async Task<string> GetPhoneHash(string phone)
     {
         if (phone.Trim().Equals("")) return CommonUtils.GetPhoneHash("");
         var response = await GetAsync($"{RelayEndpoint}/v1/phone/hash/{phone.Trim()}");
         var jObject = ParseResponseToJObject(response);
         return jObject.GetValue("phoneHash")!.ToString();
+    }
+
+
+    private ChainInfo? _mainChainInfo;
+    public async Task<ChainInfo >GetChainInfoOfMainChain()
+    {
+        if (_mainChainInfo != null) return _mainChainInfo;
+        
+        var response = await GetAsync($"{RelayEndpoint}/v1/chain/main/info/");
+        var jObject = ParseResponseToJObject(response);
+        var info  = ChainInfo.FromJObject(jObject);
+        if (info == null ) throw new Exception("Internal Error : Response is null");
+
+        return _mainChainInfo = info;
+    }
+
+    public async Task<long> GetChainIdOfMainChain()
+    {
+        var info = await GetChainInfoOfMainChain();
+        return info.Network.ChainId;
+    }
+
+    public async Task<long >GetNonceOfMainChainToken(string account)
+    {
+        var response = await GetAsync($"{RelayEndpoint}/v1/token/main/nonce/{account.Trim()}");
+        var jObject = ParseResponseToJObject(response);
+        return Convert.ToInt64(jObject.GetValue("nonce")!.ToString());
+    }
+    
+    public async Task<BigInteger >GetBalanceOfMainChainToken(string account)
+    {
+        var response = await GetAsync($"{RelayEndpoint}/v1/token/main/balance/{account.Trim()}");
+        var jObject = ParseResponseToJObject(response);
+        return BigInteger.Parse(jObject.GetValue("balance")!.ToString());
+    }
+    
+    private ChainInfo? _sideChainInfo;
+    public async Task<ChainInfo >GetChainInfoOfSideChain()
+    {
+        if (_sideChainInfo != null) return _sideChainInfo;
+        
+        var response = await GetAsync($"{RelayEndpoint}/v1/chain/side/info/");
+        var jObject = ParseResponseToJObject(response);
+        var info  = ChainInfo.FromJObject(jObject);
+        if (info == null ) throw new Exception("Internal Error : Response is null");
+
+        return _sideChainInfo = info;
+    }
+
+    public async Task<long> GetChainIdOfSideChain()
+    {
+        var info = await GetChainInfoOfSideChain();
+        return info.Network.ChainId;
+    }
+
+    public async Task<long >GetNonceOfSideChainToken(string account)
+    {
+        var response = await GetAsync($"{RelayEndpoint}/v1/token/side/nonce/{account.Trim()}");
+        var jObject = ParseResponseToJObject(response);
+        return Convert.ToInt64(jObject.GetValue("nonce")!.ToString());
+    }
+    
+    public async Task<BigInteger >GetBalanceOfSideChainToken(string account)
+    {
+        var response = await GetAsync($"{RelayEndpoint}/v1/token/side/balance/{account.Trim()}");
+        var jObject = ParseResponseToJObject(response);
+        return BigInteger.Parse(jObject.GetValue("balance")!.ToString());
     }
 }

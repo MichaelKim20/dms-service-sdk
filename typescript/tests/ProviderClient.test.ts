@@ -9,16 +9,18 @@ describe("Test of ProviderClient", function () {
     this.timeout(1000 * 60 * 5);
     let providerClient: ProviderClient;
     let agentClient: ProviderClient;
+    const network: NetWorkType = NetWorkType.testnet;
+    const AccessKeys: Map<number, string> = new Map([
+        [NetWorkType.testnet, "0x8acceea5937a8e4bb07abc93a1374264dd9bd2fc384c979717936efe63367276"],
+        [NetWorkType.localhost, "0x2c93e943c0d7f6f1a42f53e116c52c40fe5c1b428506dc04b290f2a77580a342"],
+    ]);
 
     before(() => {
         providerClient = new ProviderClient(
-            NetWorkType.testnet,
+            network,
             "0x70438bc3ed02b5e4b76d496625cb7c06d6b7bf4362295b16fdfe91a046d4586c"
         );
-        agentClient = new ProviderClient(
-            NetWorkType.testnet,
-            "0x44868157d6d3524beb64c6ae41ee6c879d03c19a357dadb038fefea30e23cbab"
-        );
+        agentClient = new ProviderClient(network, "0x44868157d6d3524beb64c6ae41ee6c879d03c19a357dadb038fefea30e23cbab");
     });
 
     it("Check Provider", async () => {

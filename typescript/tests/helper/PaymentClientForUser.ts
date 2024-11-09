@@ -1,7 +1,7 @@
+import { CommonUtils } from "../../src";
 import { Client } from "../../src/client/Client";
 import { HTTPClient } from "../../src/network/HTTPClient";
 import { IPaymentTaskItemShort, NetWorkType } from "../../src/types";
-import { CommonUtils } from "../../src/utils/CommonUtils";
 
 import { BigNumber, BigNumberish } from "@ethersproject/bignumber";
 import { Wallet } from "@ethersproject/wallet";

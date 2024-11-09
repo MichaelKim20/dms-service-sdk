@@ -92,7 +92,7 @@ public static class CommonUtils
         return message;
     }
 
-    public static byte[] GetRegisterAssistanceMessage(
+    public static byte[] GetRegisterAgentMessage(
         string provider,
         string assistance,
         long nonce,
@@ -249,6 +249,124 @@ public static class CommonUtils
         digest.DoFinal(message, 0);
         return message;
     }
+    // endregion
+    
+    // region
+    public static byte[] GetCollectSettlementAmountMultiClientMessage(
+        string managerShopId,
+        string[] clientShopIds,
+        long nonce,
+        long chainId
+    )
+    {
+        var ids = clientShopIds.Select(ConvertHexStringToByte).ToArray();
+        var abiEncode = new ABIEncode();
+        var encodedBytes = abiEncode.GetABIEncoded(
+            new ABIValue("string", "CollectSettlementAmountMultiClient"),
+            new ABIValue("bytes32", ConvertHexStringToByte(managerShopId)),
+            new ABIValue("bytes32[]", ids),
+            new ABIValue("uint256", chainId),
+            new ABIValue("uint256", nonce)
+        );
+        var message = new byte[32];
+        var digest = new KeccakDigest(256);
+        digest.BlockUpdate(encodedBytes, 0, encodedBytes.Length);
+        digest.DoFinal(message, 0);
+        return message;
+    }
+
+    public static byte[] GetShopRefundMessage(
+        string shopId,
+        BigInteger amount,
+        long nonce,
+        long chainId
+    )
+    {
+        var abiEncode = new ABIEncode();
+        var encodedBytes = abiEncode.GetABIEncoded(
+            new ABIValue("bytes32", ConvertHexStringToByte(shopId)),
+            new ABIValue("uint256", amount),
+            new ABIValue("uint256", chainId),
+            new ABIValue("uint256", nonce)
+        );
+        var message = new byte[32];
+        var digest = new KeccakDigest(256);
+        digest.BlockUpdate(encodedBytes, 0, encodedBytes.Length);
+        digest.DoFinal(message, 0);
+        return message;
+    }
+
+    public static byte[] GetTransferMessage(
+        long chainId,
+        string tokenAddress,
+        string from,
+        string to,
+        BigInteger amount,
+        long nonce,
+        long expiry
+    )
+    {
+        var abiEncode = new ABIEncode();
+        var encodedBytes = abiEncode.GetABIEncoded(
+            new ABIValue("uint256", chainId),
+            new ABIValue("address", tokenAddress),
+            new ABIValue("address", from),
+            new ABIValue("address", to),
+            new ABIValue("uint256", amount),
+            new ABIValue("uint256", nonce),
+            new ABIValue("uint256", expiry)
+        );
+        var message = new byte[32];
+        var digest = new KeccakDigest(256);
+        digest.BlockUpdate(encodedBytes, 0, encodedBytes.Length);
+        digest.DoFinal(message, 0);
+        return message;
+    }
+
+    public static byte[] GetSetSettlementManagerMessage(
+        string shopId,
+        string managerId,
+        long nonce,
+        long chainId
+    )
+    {
+        var abiEncode = new ABIEncode();
+        var encodedBytes = abiEncode.GetABIEncoded(
+            new ABIValue("string", "SetSettlementManager"),
+            new ABIValue("bytes32", ConvertHexStringToByte(shopId)),
+            new ABIValue("bytes32", ConvertHexStringToByte(managerId)),
+            new ABIValue("uint256", chainId),
+            new ABIValue("uint256", nonce)
+        );
+        var message = new byte[32];
+        var digest = new KeccakDigest(256);
+        digest.BlockUpdate(encodedBytes, 0, encodedBytes.Length);
+        digest.DoFinal(message, 0);
+        return message;
+    }
+
+    public static byte[] GetRemoveSettlementManagerMessage(
+        string shopId,
+        long nonce,
+        long chainId
+    )
+    {
+        var abiEncode = new ABIEncode();
+        var encodedBytes = abiEncode.GetABIEncoded(
+            new ABIValue("string", "RemoveSettlementManager"),
+            new ABIValue("bytes32", ConvertHexStringToByte(shopId)),
+            new ABIValue("bytes32", ConvertHexStringToByte("0x0000000000000000000000000000000000000000000000000000000000000000")),
+            new ABIValue("uint256", chainId),
+            new ABIValue("uint256", nonce)
+        );
+        var message = new byte[32];
+        var digest = new KeccakDigest(256);
+        digest.BlockUpdate(encodedBytes, 0, encodedBytes.Length);
+        digest.DoFinal(message, 0);
+        return message;
+    }
+
+
     // endregion
 
     public static string SignMessage(EthECKey key, byte[] message)

@@ -35,7 +35,7 @@ public class ProviderClient(NetWorkType network, string privateKey) : Client(net
     public async Task<string> SetAgent(string account)
     {
         var nonce = await GetLedgerNonceOf(Address);
-        var message = CommonUtils.GetRegisterAssistanceMessage(
+        var message = CommonUtils.GetRegisterAgentMessage(
             Address,
             account,
             nonce,

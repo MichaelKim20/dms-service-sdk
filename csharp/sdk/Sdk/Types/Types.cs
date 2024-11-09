@@ -296,3 +296,142 @@ public class ShopTaskItem(
         );
     }
 }
+
+public class ChainNetwork(
+    string name,
+    long chainId,
+    string ensAddress,
+    BigInteger chainTransferFee,
+    BigInteger chainBridgeFee,
+    BigInteger loyaltyTransferFee,
+    BigInteger loyaltyBridgeFee
+)
+{
+    public readonly string Name = name;
+    public readonly long ChainId = chainId;
+    public readonly string EnsAddress = ensAddress;
+    public readonly BigInteger ChainTransferFee = chainTransferFee;
+    public readonly BigInteger ChainBridgeFee = chainBridgeFee;
+    public readonly BigInteger LoyaltyTransferFee = loyaltyTransferFee;
+    public readonly BigInteger LoyaltyBridgeFee = loyaltyBridgeFee;
+    public static ChainNetwork FromJObject(JObject data)
+    {
+        return new ChainNetwork(
+            data["name"]!.ToString(),
+            Convert.ToInt64(data["chainId"]!.ToString()),
+            data["ensAddress"]!.ToString(),
+            BigInteger.Parse(data["chainTransferFee"]!.ToString()),
+            BigInteger.Parse(data["chainBridgeFee"]!.ToString()),
+                BigInteger.Parse(data["loyaltyTransferFee"]!.ToString()),
+                    BigInteger.Parse(data["loyaltyBridgeFee"]!.ToString())
+        );
+    }
+}
+
+public class ChainContract(
+    string token,
+    string chainBridge,
+    string loyaltyBridge
+)
+{
+    public readonly string Token = token;
+    public readonly string ChainBridge = chainBridge;
+    public readonly string LoyaltyBridge = loyaltyBridge;
+    public static ChainContract FromJObject(JObject data)
+    {
+        return new ChainContract(
+            data["token"]!.ToString(),
+            data["chainBridge"]!.ToString(),
+            data["loyaltyBridge"]!.ToString()
+        );
+    }
+}
+
+public class ChainInfo(string url, ChainNetwork network, ChainContract contract)
+{
+    public string Url = url;
+    public ChainNetwork Network = network;
+    public ChainContract Contract = contract;
+    public static ChainInfo? FromJObject(JObject data)
+    {
+        var network = data["network"]!.ToObject<JObject>();
+        var contract = data["contract"]!.ToObject<JObject>();
+        if ((network != null) && (contract != null))
+        {
+            return new ChainInfo(
+                data["url"]!.ToString(),
+                ChainNetwork.FromJObject(network),
+                ChainContract.FromJObject(contract));
+        }
+        else
+        {
+            return null;
+        }
+    }
+}
+
+
+public class ShopData(
+    string shopId,
+    string name,
+    string currency,
+    string account,
+    string delegator,
+    BigInteger providedAmount,
+    BigInteger usedAmount,
+    BigInteger collectedAmount,
+    BigInteger refundedAmount,
+    int status
+)
+{
+    public readonly string ShopId = shopId;
+    public readonly string Name = name;
+    public readonly string Currency = currency;
+    public readonly string Account = account;
+    public readonly string Delegator = delegator;
+    public readonly BigInteger ProvidedAmount = providedAmount;
+    public readonly BigInteger UsedAmount = usedAmount;
+    public readonly BigInteger CollectedAmount = collectedAmount;
+    public readonly BigInteger RefundedAmount = refundedAmount;
+    public readonly int Status = status;
+    
+    public readonly BigInteger SettledAmount = 
+        BigInteger.Add(collectedAmount, usedAmount).CompareTo(providedAmount) > 0 
+            ? BigInteger.Subtract(BigInteger.Add(collectedAmount, usedAmount), providedAmount) 
+            : BigInteger.Zero;
+    
+    public static ShopData FromJObject(JObject data)
+    {
+        {
+            return new ShopData(
+                data["shopId"]!.ToString(),
+                data["name"]!.ToString(),
+                data["currency"]!.ToString(),
+                data["account"]!.ToString(),
+                data["delegator"]!.ToString(),
+                BigInteger.Parse(data["providedAmount"]!.ToString()),
+                BigInteger.Parse(data["usedAmount"]!.ToString()),
+                BigInteger.Parse(data["collectedAmount"]!.ToString()),
+                BigInteger.Parse(data["refundedAmount"]!.ToString()),
+                Convert.ToInt32(data["status"]!.ToString())
+            );
+        }
+    }
+}
+
+
+public class ShopRefundableData (BigInteger refundableAmount, BigInteger refundableToken)
+{
+    public readonly BigInteger RefundableAmount = refundableAmount;
+    public readonly BigInteger RefundableToken = refundableToken;
+    
+    public static ShopRefundableData FromJObject(JObject data)
+    {
+        {
+            return new ShopRefundableData(
+                BigInteger.Parse(data["refundableAmount"]!.ToString()),
+                BigInteger.Parse(data["refundableToken"]!.ToString())
+            );
+        }
+    }
+}

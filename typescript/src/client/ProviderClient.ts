@@ -57,12 +57,7 @@ export class ProviderClient extends Client {
     public async setAgent(agent: string): Promise<string> {
         const client = new HTTPClient({});
         const nonce = await this.getLedgerNonceOf(this.wallet.address);
-        const message = CommonUtils.getRegisterAssistanceMessage(
-            this.wallet.address,
-            agent,
-            nonce,
-            await this.getChainId()
-        );
+        const message = CommonUtils.getRegisterAgentMessage(this.wallet.address, agent, nonce, await this.getChainId());
         const signature = await CommonUtils.signMessage(this.wallet, message);
         const response = await client.post(
             URI(this.endpoints.relay).directory("/v1/provider/assistant/register").toString(),

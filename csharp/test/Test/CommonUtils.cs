@@ -11,9 +11,9 @@ public class CommonUtilsTest
     }
 
     [Test]
-    public void GetRegisterAssistanceMessage()
+    public void GetRegisterAgentMessage()
     {
-        var message = CommonUtils.GetRegisterAssistanceMessage(
+        var message = CommonUtils.GetRegisterAgentMessage(
             "0x64D111eA9763c93a003cef491941A011B8df5a49",
             "0x3FE8D00143bd0eAd2397D48ba0E31E5E1268dBfb",
             45,
@@ -26,7 +26,7 @@ public class CommonUtilsTest
     [Test]
     public void SignMessage()
     {
-        var message = CommonUtils.GetRegisterAssistanceMessage(
+        var message = CommonUtils.GetRegisterAgentMessage(
             "0x64D111eA9763c93a003cef491941A011B8df5a49",
             "0x3FE8D00143bd0eAd2397D48ba0E31E5E1268dBfb",
             45,
