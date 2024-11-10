@@ -11,6 +11,7 @@ import org.acc.service.sdk.utils.Amount;
 import org.acc.service.sdk.utils.CommonUtils;
 import org.junit.jupiter.api.Test;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Hashtable;
 
@@ -27,6 +28,9 @@ class SettlementClientTest {
     private String managerId;
     private String userAccount;
     private String userPhone;
+
+    private SettlementClient settlementClient;
+    private SettlementClientForShop settlementClientForManager;
 
     @Test
     void Settlement(){
@@ -63,6 +67,7 @@ class SettlementClientTest {
 
         savePurchase();
         payment();
+        settlement();
     }
 
     void savePurchase() {
@@ -113,16 +118,16 @@ class SettlementClientTest {
         try {
             // Create User Client
             System.out.println("[ Create User Client ]");
-            PaymentClientForUser userClient = new PaymentClientForUser(network, users.get(0).privateKey);
+            PaymentClientForUser userClient = new PaymentClientForUser(network, users.getFirst().privateKey);
 
             // Create Client
             System.out.println("[ Create Client ]");
             PaymentClient client = new PaymentClient(network, AccessKeys.get(network));
 
             String terminalID = "POS001";
-            for (int i = 0; i < 6; i++) {
+            PaymentTaskItem paymentItem;
 
-                SettlementClientForShop shopClient = new SettlementClientForShop(network, shops.get(i).privateKey, shops.get(i).shopId);
+            for (int i = 0; i < 6; i++) {
 
                 // Create Temporary Account
                 System.out.println("[ Create Temporary Account ]");
@@ -131,22 +136,25 @@ class SettlementClientTest {
 
                 // Open New Payment
                 System.out.println("[ Open New Payment ]");
-                PaymentTaskItem paymentItem = client.openNewPayment(
-                        CommonUtils.getSamplePurchaseId(),
+                String purchaseId = CommonUtils.getSamplePurchaseId();
+                paymentItem = client.openNewPayment(
+                        purchaseId,
                         temporaryAccount,
                         Amount.make("1_000").getValue(),
                         "php",
-                        shopClient.getShopId(),
+                        shops.get(i).shopId,
                         terminalID
                 );
+                assertEquals(paymentItem.purchaseId, purchaseId);
+                assertEquals(paymentItem.account.toLowerCase(), userClient.getAddress().toLowerCase());
 
                 // Waiting...
                 System.out.println("[ Waiting... ]");
-                Thread.sleep(3000);
+                Thread.sleep(1000);
 
                 // Approval New Payment
                 System.out.println("[ Approval New Payment ]");
-                userClient.approveNewPayment(
+                var res = userClient.approveNewPayment(
                         paymentItem.paymentId,
                         paymentItem.purchaseId,
                         paymentItem.amount,
@@ -154,6 +162,7 @@ class SettlementClientTest {
                         paymentItem.shopId,
                         true
                 );
+                assertEquals(res.paymentId, paymentItem.paymentId);
 
                 // Waiting...
                 System.out.println("[ Waiting... ]");
@@ -161,7 +170,177 @@ class SettlementClientTest {
 
                 // Close New Payment
                 System.out.println("[ Close New Payment ]");
-                client.closeNewPayment(paymentItem.paymentId, true);
+                var res2 = client.closeNewPayment(paymentItem.paymentId, true);
+                assertEquals(res2.paymentId, paymentItem.paymentId);
+
+                // Waiting...
+                System.out.println("[ Waiting... ]");
+                Thread.sleep(3000);
+            }
+        } catch (Exception e) {
+            assertEquals("some exception message...", e.getMessage());
+        }
+    }
+
+    void settlement(){
+        try {
+            Test05_CreateSettlementClient();
+            Test06_RemoveManager();
+            Test07_SetManager();
+            Test08_Check();
+            Test09_CollectSettlementAmount();
+            Test10_Waiting();
+            Test11_CheckRefund();
+            Test12_RefundOfManager();
+            Test13_Waiting();
+            Test14_Withdrawal();
+        } catch (Exception e) {
+            assertEquals("some exception message...", e.getMessage());
+        }
+    }
+
+    void Test05_CreateSettlementClient(){
+        System.out.println("[ Test05_CreateSettlementClient ]");
+        try {
+            settlementClientForManager = new SettlementClientForShop(network, shops.get(6).privateKey, shops.get(6).shopId);
+            settlementClient = new SettlementClient(network, shops.get(6).privateKey, shops.get(6).shopId);
+            settlementClientForManager.setAgentOfRefund("0x0000000000000000000000000000000000000000");
+            settlementClientForManager.setAgentOfWithdrawal("0x0000000000000000000000000000000000000000");
+        } catch (Exception e) {
+            assertEquals("some exception message...", e.getMessage());
+        }
+    }
+
+    void Test06_RemoveManager(){
+        System.out.println("[ Test06_RemoveManager ]");
+        try {
+            for (ShopData shop : shops)
+            {
+                var shopClient = new SettlementClientForShop(network, shop.privateKey, shop.shopId);
+                shopClient.removeSettlementManager();
+            }
+        } catch (Exception e) {
+            assertEquals("some exception message...", e.getMessage());
+        }
+    }
+
+    void Test07_SetManager(){
+        System.out.println("[ Test07_SetManager ]");
+        try {
+            for (int i = 0; i < 6; i++)
+            {
+                var shopClient = new SettlementClientForShop(network, shops.get(i).privateKey, shops.get(i).shopId);
+                shopClient.setSettlementManager(settlementClientForManager.getShopId());
+            }
+        } catch (Exception e) {
+            assertEquals("some exception message...", e.getMessage());
+        }
+    }
+
+    void Test08_Check(){
+        System.out.println("[ Test08_Check ]");
+        try {
+            var length = settlementClient.getSettlementClientLength();
+            assertEquals(length, 6);
+        } catch (Exception e) {
+            assertEquals("some exception message...", e.getMessage());
+        }
+    }
+
+    void Test09_CollectSettlementAmount()
+    {
+        System.out.println("[ Test09_CollectSettlementAmount ]");
+        try {
+            var ids = new ArrayList<String>();
+            for (int i = 0; i < 6; i++)
+            {
+                ids.add(shops.get(i).shopId);
+            }
+            settlementClient.collectSettlementAmountMultiClient(ids);
+        } catch (Exception e) {
+            assertEquals("some exception message...", e.getMessage());
+        }
+    }
+
+    void Test10_Waiting()
+    {
+        System.out.println("[ Test10_Waiting ]");
+        try {
+            Thread.sleep(3000);
+        } catch (Exception e) {
+            assertEquals("some exception message...", e.getMessage());
+        }
+    }
+
+    void Test11_CheckRefund()
+    {
+        System.out.println("[ Test11_CheckRefund ]");
+        try {
+            for (int i = 0; i < 6; i++)
+            {
+                var shopClient = new SettlementClientForShop(network, shops.get(i).privateKey, shops.get(i).shopId);
+                var res = shopClient.getRefundable();
+                assertEquals(res.refundableAmount, BigInteger.ZERO);
+            }
+        } catch (Exception e) {
+            assertEquals("some exception message...", e.getMessage());
+        }
+    }
+
+
+    void Test12_RefundOfManager()
+    {
+        System.out.println("[ Test09_RefundOfManager ]");
+        try {
+            var refundableData =  settlementClient.getRefundable();
+            var refundableAmount = refundableData.refundableAmount;
+            var refundableToken = refundableData.refundableToken;
+
+            var accountOfShop = settlementClient.getAccountOfShopOwner();
+            var res1 = settlementClient.getBalanceAccount(accountOfShop);
+
+            settlementClient.refund(refundableAmount);
+
+            var res2 = settlementClient.getBalanceAccount(accountOfShop);
+
+            assertEquals(res2.token.balance, res1.token.balance.add(refundableToken));
+        } catch (Exception e) {
+            assertEquals("some exception message...", e.getMessage());
+        }
+    }
+
+    void Test13_Waiting()
+    {
+        System.out.println("[ Test10_Waiting ]");
+        try {
+            Thread.sleep(3000);
+        } catch (Exception e) {
+            assertEquals("some exception message...", e.getMessage());
+        }
+    }
+
+    void Test14_Withdrawal()
+    {
+        System.out.println("[ Test11_Withdrawal ]");
+        try {
+            var chainInfo = settlementClient.getChainInfoOfSideChain();
+            var accountOfShop = settlementClient.getAccountOfShopOwner();
+            var res2 = settlementClient.getBalanceAccount(accountOfShop);
+            var balanceOfToken = res2.token.balance;
+            var balanceMainChain1 = settlementClient.getBalanceOfMainChainToken(accountOfShop);
+            settlementClient.withdraw(balanceOfToken);
+
+            long t1 = CommonUtils.getTimeStamp();
+            while(true) {
+                BigInteger balanceMainChain2 = settlementClient.getBalanceOfMainChainToken(accountOfShop);
+                if (balanceMainChain2.equals(balanceMainChain1.add(balanceOfToken).subtract(chainInfo.network.loyaltyBridgeFee))) {
+                    break;
+                }
+                else if (CommonUtils.getTimeStamp() - t1 > 120) {
+                    System.out.println("Time out for providing... ");
+                    break;
+                }
+                Thread.sleep(1000);
             }
         } catch (Exception e) {
             assertEquals("some exception message...", e.getMessage());

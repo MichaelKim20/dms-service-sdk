@@ -212,26 +212,26 @@ public class CommonUtils {
 
     public static byte[] getCollectSettlementAmountMultiClientMessage(
             String managerShopId,
-            String[] clientShopIds,
+            ArrayList<String> clientShopIds,
             long nonce,
             long chainId
     ) {
         var clients = new ArrayList<Bytes32>();
-        for (int i = 0; i < clientShopIds.length; i++) {
-            clients.add(new Bytes32(Numeric.hexStringToByteArray(clientShopIds[i])));
+        for (String clientShopId : clientShopIds) {
+            clients.add(new Bytes32(Numeric.hexStringToByteArray(clientShopId)));
         }
-        DynamicArray<Bytes32> clientDynamicArray;
-        clientDynamicArray = new DynamicArray<Bytes32>(Bytes32.class, clients.stream().toList());
 
         String value = TypeEncoder.encode(
                 new DynamicStruct(
                         new Utf8String("CollectSettlementAmountMultiClient"),
                         new Bytes32(Numeric.hexStringToByteArray(managerShopId)),
-                        clientDynamicArray,
+                        new DynamicArray<>(Bytes32.class, clients.stream().toList()),
                         new Uint256(nonce),
                         new Uint256(chainId)
                 )
         );
+        System.out.println("getCollectSettlementAmountMultiClientMessage : " + value);
+
         return Hash.sha3(Numeric.hexStringToByteArray(value));
     }
 
@@ -303,7 +303,8 @@ public class CommonUtils {
                 new DynamicStruct(
                         new Utf8String("RemoveSettlementManager"),
                         new Bytes32(Numeric.hexStringToByteArray(shopId)),
-                        new Bytes32(Numeric.hexStringToByteArray(managerId)),                        new Uint256(chainId),
+                        new Bytes32(Numeric.hexStringToByteArray(managerId)),
+                        new Uint256(chainId),
                         new Uint256(nonce)
                 )
         );

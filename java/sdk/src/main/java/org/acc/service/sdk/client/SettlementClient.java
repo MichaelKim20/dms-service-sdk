@@ -14,6 +14,7 @@ import java.math.BigInteger;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 
 public class SettlementClient extends Client {
     /**
@@ -56,18 +57,19 @@ public class SettlementClient extends Client {
         return clientList;
     }
 
-    public String collectSettlementAmountMultiClient(String[] clients) throws Exception {
-        long nonce = this.getLedgerNonceOf(getAddress());
+    public String collectSettlementAmountMultiClient(ArrayList<String> clients) throws Exception {
         byte[] message = CommonUtils.getCollectSettlementAmountMultiClientMessage(
                 getShopId(),
                 clients,
-                nonce,
+                this.getShopNonceOf(getAddress()),
                 this.getChainId()
         );
         String signature = CommonUtils.signMessage(this.credentials.getEcKeyPair(), message);
 
         URI uri = new URI(String.format("%s/v1/shop/settlement/collect", relayEndpoint));
         HttpURLConnection conn = getHttpURLConnection(uri, "POST");
+
+        System.out.println("collectSettlementAmountMultiClient : " + String.join(",", clients));
 
         JSONObject body = new JSONObject();
         body.put("shopId", getShopId());
@@ -90,7 +92,7 @@ public class SettlementClient extends Client {
         return ShopData.fromJSONObject(data);
     }
 
-    public String getAccountOfShopOwner(String provider) throws Exception {
+    public String getAccountOfShopOwner() throws Exception {
         ShopData info = getShopInfo();
         return info.account;
     }
@@ -104,7 +106,7 @@ public class SettlementClient extends Client {
 
     public String refund(BigInteger amount) throws Exception {
         var adjustedAmount = CommonUtils.zeroGWEI(amount);
-        long nonce = this.getLedgerNonceOf(this.credentials.getAddress());
+        long nonce = this.getShopNonceOf(this.credentials.getAddress());
         long chainId = this.getChainId();
         byte[] message = CommonUtils.getShopRefundMessage(getShopId(), adjustedAmount, nonce, chainId);
         String signature = CommonUtils.signMessage(this.credentials.getEcKeyPair(), message);

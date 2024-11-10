@@ -107,14 +107,14 @@ public class SettlementClientForShop extends SettlementClient {
         return data.getString("txHash");
     }
 
-    public String getAgentOfWithdraw() throws Exception {
+    public String getAgentOfWithdrawal() throws Exception {
         URI uri = new URI(relayEndpoint + "/v1/agent/withdrawal/" + getShopId());
         HttpURLConnection conn = getHttpURLConnection(uri, "GET");
         JSONObject data = getJSONObjectResponse(conn);
         return data.getString("agent");
     }
 
-    public String setAgentOfWithdraw(String agent) throws Exception {
+    public String setAgentOfWithdrawal(String agent) throws Exception {
         byte[] message = CommonUtils.getRegisterAgentMessage(
                 getAddress(),
                 agent,
