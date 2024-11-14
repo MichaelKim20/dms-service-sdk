@@ -23,7 +23,7 @@ This SDK can be used in the following places.
 
 ## 3) How to save purchase data
 
-See [API Docs - https://save.test.acccoin.io/docs/](https://save.test.acccoin.io/docs/)
+See [API Docs - https://save.test.acccoin.io/docs/](https://save.test.acccoin.io/docs/)  
 See Test Code https://github.com/acc-coin/acc-service-sdk/blob/v0.x.x/typescript/tests/SavePurchaseClient.test.ts
 
 This is a function used by partners that support the payment system.  
@@ -81,7 +81,7 @@ await savePurchaseClient.saveCancelPurchase(purchaseId, timestamp, 60n);
 
 ## 4) How to use loyalty points
 
-See [API Docs - https://relay.test.acccoin.io/docs/](https://relay.test.acccoin.io/docs/#/Payment)
+See [API Docs - https://relay.test.acccoin.io/docs/](https://relay.test.acccoin.io/docs/#/Payment)  
 See Test Code https://github.com/acc-coin/acc-service-sdk/blob/v0.x.x/typescript/tests/PaymentClient.test.ts
 
 This is a necessary function to build a point payment system.  
@@ -172,7 +172,7 @@ await eventCollector.stop();
 
 ## 5) How to provide loyalty points
 
-See [API Docs - https://relay.test.acccoin.io/docs/](https://relay.test.acccoin.io/docs/#/Loyalty%20Point%20Provider)
+See [API Docs - https://relay.test.acccoin.io/docs/](https://relay.test.acccoin.io/docs/#/Loyalty%20Point%20Provider)  
 See Test Code https://github.com/acc-coin/acc-service-sdk/blob/v0.x.x/typescript/tests/ProviderClient.test.ts
 
 This is the functionality you need to provide points.  
@@ -237,3 +237,87 @@ const phoneNumber = "+82 10-9000-5000";
 const amount = BOACoin.make(100).value;
 await agentClient.provideToPhone(prviderAddress, phoneNumber, amount);
 ```
+
+## 6) How to settlement of shops
+
+See [API Docs - https://relay.test.acccoin.io/docs/](https://relay.test.acccoin.io/docs/#/Shop)  
+See Sample Code https://github.com/acc-coin/acc-service-sdk/blob/v0.x.x/typescript/tests/SettlementClient.test.ts
+
+The shop that acts as an agent for the settlement of shops is the settlement-shop.  
+This SDK provides the features you need for this settlement-shop.  
+First, the settlement-shop needs to secure the store ID by installing the shop app.  
+And register the address of the settlement agent and withdrawal agent on the app.  
+The wallet's private key of the settlement agent is managed by the development team,
+and the wallet's private key of the withdrawal agent is managed by the accounting team.  
+Owners of settlement-shop can set up these two addresses.
+
+### 6.1) Create Client for settlement-shop
+
+```typescript
+var ownerPrivateKey = "0xd72fb7fe49fd18f92481cbee186050816631391b4a25d579b7cff7efdf7099d3";
+var managerShopId = "0x000108bde9ef98803841f22e8bc577a69fc47913914a8f5fa60e016aaa74bc86";
+var settlementClientForManager = new SettlementClient(network, ownerPrivateKey, managerShopId);
+```
+
+### 6.2) Create Client for refund agent
+This agent accumulates the settlement of all registered shops into the settlement of the settlement-shop, and exchanges the settlement for tokens.
+
+```typescript
+var refundAgentPrivateKey = "0x70438bc3ed02b5e4b76d496625cb7c06d6b7bf4362295b16fdfe91a046d4586c";
+var managerShopId = "0x000108bde9ef98803841f22e8bc577a69fc47913914a8f5fa60e016aaa74bc86";
+var refundAgent = new SettlementClient(network, refundAgentPrivateKey, managerShopId);
+```
+
+### 6.3) Create Client for withdrawal agent
+This agent is authorized to perform the function of withdrawing tokens to the main chain.
+
+```typescript
+var withdrawalAgentPrivateKey = "0x44868157d6d3524beb64c6ae41ee6c879d03c19a357dadb038fefea30e23cbab";
+var managerShopId = "0x000108bde9ef98803841f22e8bc577a69fc47913914a8f5fa60e016aaa74bc86";
+var withdrawalAgent = new SettlementClient(network, withdrawalAgentPrivateKey, managerShopId);
+```
+
+### 6.4) Register the refund agent
+This can only be registered by the owner of the settlement-shop.
+
+```typescript
+await settlementClientForManager.setAgentOfRefund(refundAgent.address);
+```
+
+### 6.5) Register the withdrawal agent
+This can only be registered by the owner of the settlement-shop.
+
+```typescript
+await settlementClientForManager.setAgentOfWithdrawal(withdrawalAgent.address);
+```
+
+### 6.6) Collect Settlement Amount
+You have to get the number of stores first, and if the number of stores is too high, you have to do it several times.  
+The maximum number of stores that can be processed at once is 10.
+
+```typescript
+var count = await refundAgent.getSettlementClientLength();
+var clients = await refundAgent.getSettlementClientList(0, count);
+await refundAgent.collectSettlementAmountMultiClient(clients);
+```
+
+### 6.7) Refund Settlement Amount
+Exchange the settlement amount into tokens.
+
+```typescript
+var refundableData = await settlementClient.getRefundable();
+await refundAgent.refund(refundableData.refundableAmount);
+```
+
+### 6.8) Withdrawal token
+Withdraw tokens to the main chain.
+
+```typescript
+var accountOfShop = await settlementClient.getAccountOfShopOwner();
+var res2 = await settlementClient.getBalanceAccount(accountOfShop);
+var balanceOfToken = res2.token.balance;
+await withdrawalAgent.withdraw(balanceOfToken);
+```
+
+### 6.9) Transfer of tokens
+Owners of settlement-shop can transfer tokens withdrawn to the main chain from the app to other addresses

@@ -14,7 +14,7 @@
         <Description>The standard development kit provided for interworking with a decentralized loyalty point system.</Description>
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <Copyright>Michael Kim</Copyright>
-        <Version>1.2.0</Version>
+        <Version>1.2.1</Version>
         <Title>acc-service-sdk</Title>
         <PackageId>acc-service-sdk</PackageId>
     </PropertyGroup>

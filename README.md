@@ -6,6 +6,7 @@ This SDK can be used in the following places.
 1. It can be used when implementing the function of delivering purchase information paid by a KIOSK or POS.
 2. It can be used when implementing the ability to purchase products using loyalty points.
 3. It can be used when implementing a method in which partners deposit tokens and then provide points to users.
+4. Provides information on shops registered with the settlement manager and the ability to withdraw settlement money into tokens.
 
 ---
 

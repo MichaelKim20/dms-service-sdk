@@ -45,14 +45,14 @@ public class SettlementClient extends Client {
         return data.getInt("length");
     }
 
-    public String[] getSettlementClientList(long startIndex, long endIndex) throws Exception {
+    public ArrayList<String> getSettlementClientList(long startIndex, long endIndex) throws Exception {
         URI uri = new URI(relayEndpoint + "/v1/shop/settlement/client/list/" + getShopId() + "?start=" + startIndex + "&end=" + endIndex);
         HttpURLConnection conn = getHttpURLConnection(uri, "GET");
         JSONObject data = getJSONObjectResponse(conn);
         var clients = data.getJSONArray("clients");
-        var clientList = new String[clients.length()];
+        var clientList = new ArrayList<String>();
         for (var i = 0; i < clients.length(); i++) {
-            clientList[i] = clients.getString(i);
+            clientList.add(clients.getString(i));
         }
         return clientList;
     }
