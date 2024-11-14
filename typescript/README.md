@@ -1,6 +1,6 @@
 # acc-service-sdk for Typescript
 
-## Installation
+## 1) Installation
 
 Use [yarn](https://yarnpkg.com/) to install acc-service-sdk.
 
@@ -10,28 +10,21 @@ yarn add acc-service-sdk
 
 ---
 
-## Testing
+## 2) Features
 
-To execute library tests just run:
-
-```bash
-yarn test
-```
-
----
-
-## Features
 A standard development kit provided for interworking with a decentralized loyalty point system.
 This SDK can be used in the following places.
+
 1. It can be used when implementing the function of delivering purchase information paid by a KIOSK or POS.
 2. It can be used when implementing the ability to purchase products using loyalty points.
 3. It can be used when implementing a method in which partners deposit tokens and then provide points to users.
 
 ---
 
-## How to save purchase data
+## 3) How to save purchase data
 
 See [API Docs - https://save.test.acccoin.io/docs/](https://save.test.acccoin.io/docs/)
+See Test Code https://github.com/acc-coin/acc-service-sdk/blob/v0.x.x/typescript/tests/SavePurchaseClient.test.ts
 
 This is a function used by partners that support the payment system.  
 The test net of the loyalty system is ready.  
@@ -39,8 +32,10 @@ You can proceed with the development using the test net and switch to the main n
 Please create a wallet to be used for this feature, and forward the address of the wallet to the operations team of the loyalty system.  
 The private key of the wallet, which can be used on testnet, is "0x8acceea5937a8e4bb07abc93a1374264dd9bd2fc384c979717936efe63367276".  
 Please make the wallet of the main net yourself and deliver only its address to the operation team.  
+The system adds purchase information received from a trusted partner to the block. Validators verify this. For verified
+data, the system gives the buyer a percentage of the purchase amount as points.
 
-### Create Client Module
+### 3.1) Create Client Module
 
 ```typescript
 // The private key of wallet
@@ -51,7 +46,7 @@ const addressOfAsset = "0x85EeBb1289c0d0C17eFCbadB40AeF0a1c3b46714";
 const savePurchaseClient = new SavePurchaseClient(NetWorkType.testnet, privateKeyOfCollector, addressOfAsset);
 ```
 
-### Save New Purchase Data
+### 3.2) Save New Purchase Data
 
 ```typescript
 const purchaseId = "P100000000000000";
@@ -76,7 +71,7 @@ await savePurchaseClient.saveNewPurchase(
 );
 ```
 
-### Save Cancel Purchase Data
+### 3.3) Save Cancel Purchase Data
 
 ```typescript
 await savePurchaseClient.saveCancelPurchase(purchaseId, timestamp, 60n);
@@ -84,16 +79,17 @@ await savePurchaseClient.saveCancelPurchase(purchaseId, timestamp, 60n);
 
 ---
 
-## How to use loyalty points
+## 4) How to use loyalty points
 
 See [API Docs - https://relay.test.acccoin.io/docs/](https://relay.test.acccoin.io/docs/#/Payment)
+See Test Code https://github.com/acc-coin/acc-service-sdk/blob/v0.x.x/typescript/tests/PaymentClient.test.ts
 
 This is a necessary function to build a point payment system.  
 Please create a wallet to be used for payment, and forward the address of the wallet to the operations team of the loyalty system.  
 The private key of the wallet, which can be used on testnet, is "0x8acceea5937a8e4bb07abc93a1374264dd9bd2fc384c979717936efe63367276".  
-Please make the wallet of the main net yourself and deliver only its address to the operation team.  
+Please make the wallet of the main net yourself and deliver only its address to the operation team.
 
-### Create Client for Payment
+### 4.1) Create Client for Payment
 
 ```typescript
 // This is the private key of the wallet to be used for payment.
@@ -101,9 +97,7 @@ const privateKeyForPayment = "0x8acceea5937a8e4bb07abc93a1374264dd9bd2fc384c9797
 const paymentClient = new PaymentClient(NetWorkType.testnet, privateKeyForPayment);
 ```
 
-### Create Event Collector
-
-### Implement Listener
+### 4.2) Implement Event Listener
 
 ```typescript
 class PaymentEventListener implements ITaskEventListener {
@@ -124,18 +118,20 @@ class PaymentEventListener implements ITaskEventListener {
 }
 ```
 
-### Create Collector
+### 4.3) Create Event Collector
 
 ```typescript
 const eventCollector = new TaskEventCollector(paymentClient, new PaymentEventListener());
 ```
 
-### Start Event Collector
+### 4.4) Start Event Collector
+
 ```typescript
 await eventCollector.start();
 ```
 
-### Open New Payment
+### 4.5) Open New Payment
+
 ```typescript
 const purchaseId = "P1000000000000";
 const paymentItem = await paymentClient.openNewPayment(
@@ -148,31 +144,36 @@ const paymentItem = await paymentClient.openNewPayment(
 );
 ```
 
-### Close New Payment
+### 4.6) Close New Payment
+
 ```typescript
 const res = await paymentClient.closeNewPayment(paymentItem.paymentId, true);
 ```
 
-### Open Cancel Payment
+### 4.7) Open Cancel Payment
+
 ```typescript
 const res = await paymentClient.openCancelPayment(paymentItem.paymentId, terminalID);
 ```
 
-### Close Cancel Payment
+### 4.8) Close Cancel Payment
+
 ```typescript
 const res = await paymentClient.closeCancelPayment(paymentItem.paymentId, true);
 ```
 
-### Stop Event Collector
+### 4.9) Stop Event Collector
+
 ```typescript
 await eventCollector.stop();
 ```
 
 ---
 
-## How to provide loyalty points 
+## 5) How to provide loyalty points
 
 See [API Docs - https://relay.test.acccoin.io/docs/](https://relay.test.acccoin.io/docs/#/Loyalty%20Point%20Provider)
+See Test Code https://github.com/acc-coin/acc-service-sdk/blob/v0.x.x/typescript/tests/ProviderClient.test.ts
 
 This is the functionality you need to provide points.  
 You first need to deposit more than 100,000 tokens through the app.  
@@ -180,7 +181,7 @@ And you have to ask the system operation team for a partner.
 You must register first in your app.  
 And if you register the agent's address, you don't have to provide the private key of the wallet with the assets.~~
 
-### Create Client for provide without agent
+### 5.1) Create Client for provide without agent
 
 If the agent is not used, the private key of the provider in which the asset is stored should be provided to the development team
 
@@ -191,7 +192,7 @@ const providerClient = new ProviderClient(
 );
 ```
 
-### Provide to wallet address without agent
+### 5.2) Provide to wallet address without agent
 
 ```typescript
 const receiver = "0xB6f69F0e9e70034ba0578C542476cC13eF739269";
@@ -199,7 +200,7 @@ const amount = BOACoin.make(100).value;
 await providerClient.provideToAddress(providerClient.address, receiver, amount);
 ```
 
-### Provide to phone number hash without agent
+### 5.3) Provide to phone number hash without agent
 
 ```typescript
 const phoneNumber = "+82 10-9000-5000";
@@ -207,8 +208,7 @@ const amount = BOACoin.make(100).value;
 await providerClient.provideToPhone(providerClient.address, phoneNumber, amount);
 ```
 
-
-### Create Client for provide with agent
+### 5.4) Create Client for provide with agent
 
 With agent, you only need to provide the address of the provider to the development team.
 
@@ -220,19 +220,19 @@ const agentClient = new ProviderClient(
 );
 ```
 
-### Provide to wallet address with agent
+### 5.5) Provide to wallet address with agent
 
 ```typescript
-const providerAddress = "0x64D111eA9763c93a003cef491941A011B8df5a49"
+const providerAddress = "0x64D111eA9763c93a003cef491941A011B8df5a49";
 const receiver = "0xB6f69F0e9e70034ba0578C542476cC13eF739269";
 const amount = BOACoin.make(100).value;
 await agentClient.provideToAddress(providerAddress, receiver, amount);
 ```
 
-### Provide to phone number hash with agent
+### 5.6) Provide to phone number hash with agent
 
 ```typescript
-const providerAddress = "0x64D111eA9763c93a003cef491941A011B8df5a49"
+const providerAddress = "0x64D111eA9763c93a003cef491941A011B8df5a49";
 const phoneNumber = "+82 10-9000-5000";
 const amount = BOACoin.make(100).value;
 await agentClient.provideToPhone(prviderAddress, phoneNumber, amount);

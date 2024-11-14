@@ -19,7 +19,7 @@ import java.util.Hashtable;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class SettlementClientTest {
-    private final NetWorkType network = NetWorkType.localhost;
+    private final NetWorkType network = NetWorkType.testnet;
     private Hashtable<NetWorkType, String> AccessKeys;
     private Hashtable<NetWorkType, String> AssetAddresses;
     private ArrayList<ShopData> shops;

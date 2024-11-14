@@ -9,7 +9,7 @@ using System.Numerics;
 
 public class SettlementClientTests
 {
-    private NetWorkType network = NetWorkType.LocalHost;
+    private NetWorkType network = NetWorkType.TestNet;
     private Dictionary<NetWorkType, string> AccessKeys;
     private Dictionary<NetWorkType, string> AssetAddresses;
     private SavePurchaseClient savePurchaseClient;

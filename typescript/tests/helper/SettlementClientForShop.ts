@@ -1,5 +1,5 @@
 import { CommonUtils } from "../../src";
-import {SettlementClient} from "../../src/client/SettlementClient";
+import { SettlementClient } from "../../src/client/SettlementClient";
 import { HTTPClient } from "../../src/network/HTTPClient";
 
 import URI from "urijs";
@@ -8,7 +8,6 @@ import URI from "urijs";
  *
  */
 export class SettlementClientForShop extends SettlementClient {
-
     public async getSettlementManager(): Promise<string> {
         const agent = new HTTPClient({});
         const response = await agent.get(
