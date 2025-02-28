@@ -1,15 +1,23 @@
 import { BOACoin, NetWorkType, ProviderClient } from "../src";
 
 import * as assert from "assert";
+import fs from "fs";
+
+interface IUserData {
+    phone: string;
+    address: string;
+    privateKey: string;
+}
 
 describe("Test of ProviderClient", function () {
     this.timeout(1000 * 60 * 5);
+    const users: IUserData[] = JSON.parse(fs.readFileSync("./tests/data/users.json", "utf8"));
     let agentClient: ProviderClient;
-    const providerAddress = "0x64D111eA9763c93a003cef491941A011B8df5a49";
-    const network: NetWorkType = NetWorkType.testnet;
+    const providerAddress = users[0].address;
+    const network: NetWorkType = NetWorkType.acc_testnet;
 
     before(() => {
-        agentClient = new ProviderClient(network, "0x44868157d6d3524beb64c6ae41ee6c879d03c19a357dadb038fefea30e23cbab");
+        agentClient = new ProviderClient(network, users[1].privateKey);
     });
 
     it("Provider to Address by agent", async () => {

@@ -12,10 +12,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class ProviderClientTest {
-    ProviderClient providerClient = new ProviderClient(NetWorkType.testnet, "0x70438bc3ed02b5e4b76d496625cb7c06d6b7bf4362295b16fdfe91a046d4586c");
-    ProviderClient agentClient = new ProviderClient(NetWorkType.testnet, "0x44868157d6d3524beb64c6ae41ee6c879d03c19a357dadb038fefea30e23cbab");
+    ProviderClient providerClient = new ProviderClient(NetWorkType.acc_testnet, "0x70438bc3ed02b5e4b76d496625cb7c06d6b7bf4362295b16fdfe91a046d4586c");
+    ProviderClient agentClient = new ProviderClient(NetWorkType.acc_testnet, "0x44868157d6d3524beb64c6ae41ee6c879d03c19a357dadb038fefea30e23cbab");
 
-    @Test void ProviderClient() {
+    @Test
+    void ProviderClient() {
         try {
             // isProvider
             {

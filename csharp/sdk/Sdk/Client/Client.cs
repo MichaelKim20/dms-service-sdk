@@ -34,21 +34,29 @@ public class Client
     {
         switch (network)
         {
-            case NetWorkType.MainNet:
+            case NetWorkType.ACC_MainNet:
                 RelayEndpoint = "https://relay.main.acccoin.io";
                 SaveEndpoint = "https://save.main.acccoin.io";
                 break;
-            case NetWorkType.TestNet:
+            case NetWorkType.ACC_TestNet:
                 RelayEndpoint = "https://relay.test.acccoin.io";
                 SaveEndpoint = "https://save.test.acccoin.io";
+                break;
+            case NetWorkType.KIOS_MainNet:
+                RelayEndpoint = "https://relay.main.kioscoin.io";
+                SaveEndpoint = "https://save.main.kioscoin.io";
+                break;
+            case NetWorkType.KIOS_TestNet:
+                RelayEndpoint = "https://relay.test.kioscoin.io";
+                SaveEndpoint = "https://save.test.kioscoin.io";
                 break;
             case NetWorkType.LocalHost:
                 RelayEndpoint = "http://127.0.0.1:7070";
                 SaveEndpoint = "http://127.0.0.1:3030";
                 break;
             default:
-                RelayEndpoint = "https://relay.main.acccoin.io";
-                SaveEndpoint = "https://save.main.acccoin.io";
+                RelayEndpoint = "https://relay.main.kioscoin.io";
+                SaveEndpoint = "https://save.main.kioscoin.io";
                 break;
         }
 

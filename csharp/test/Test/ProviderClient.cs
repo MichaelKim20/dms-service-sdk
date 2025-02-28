@@ -9,7 +9,7 @@ using System.Numerics;
 
 public class ProviderClientTests
 {
-    private NetWorkType network = NetWorkType.TestNet;
+    private NetWorkType network = NetWorkType.ACC_TestNet;
     private ProviderClient providerClient;
     private ProviderClient agentClient;
 

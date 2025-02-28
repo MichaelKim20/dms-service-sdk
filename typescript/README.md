@@ -57,7 +57,7 @@ await savePurchaseClient.saveNewPurchase(
     0n,
     10_000,
     10_000,
-    "php",
+    "krw",
     shopId,
     userAccount,
     userPhone,
@@ -138,7 +138,7 @@ const paymentItem = await paymentClient.openNewPayment(
     purchaseId,
     temporaryAccount,
     BOACoin.make(1000).value,
-    "php",
+    "krw",
     shopClient.getShopId(),
     terminalID
 );
@@ -260,6 +260,7 @@ var settlementClientForManager = new SettlementClient(network, ownerPrivateKey, 
 ```
 
 ### 6.2) Create Client for refund agent
+
 This agent accumulates the settlement of all registered shops into the settlement of the settlement-shop, and exchanges the settlement for tokens.
 
 ```typescript
@@ -269,6 +270,7 @@ var refundAgent = new SettlementClient(network, refundAgentPrivateKey, managerSh
 ```
 
 ### 6.3) Create Client for withdrawal agent
+
 This agent is authorized to perform the function of withdrawing tokens to the main chain.
 
 ```typescript
@@ -278,6 +280,7 @@ var withdrawalAgent = new SettlementClient(network, withdrawalAgentPrivateKey, m
 ```
 
 ### 6.4) Register the refund agent
+
 This can only be registered by the owner of the settlement-shop.
 
 ```typescript
@@ -285,6 +288,7 @@ await settlementClientForManager.setAgentOfRefund(refundAgent.address);
 ```
 
 ### 6.5) Register the withdrawal agent
+
 This can only be registered by the owner of the settlement-shop.
 
 ```typescript
@@ -292,6 +296,7 @@ await settlementClientForManager.setAgentOfWithdrawal(withdrawalAgent.address);
 ```
 
 ### 6.6) Collect Settlement Amount
+
 You have to get the number of stores first, and if the number of stores is too high, you have to do it several times.  
 The maximum number of stores that can be processed at once is 10.
 
@@ -302,6 +307,7 @@ await refundAgent.collectSettlementAmountMultiClient(clients);
 ```
 
 ### 6.7) Refund Settlement Amount
+
 Exchange the settlement amount into tokens.
 
 ```typescript
@@ -310,6 +316,7 @@ await refundAgent.refund(refundableData.refundableAmount);
 ```
 
 ### 6.8) Withdrawal token
+
 Withdraw tokens to the main chain.
 
 ```typescript
@@ -320,4 +327,5 @@ await withdrawalAgent.withdraw(balanceOfToken);
 ```
 
 ### 6.9) Transfer of tokens
+
 Owners of settlement-shop can transfer tokens withdrawn to the main chain from the app to other addresses

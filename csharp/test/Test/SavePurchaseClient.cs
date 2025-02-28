@@ -7,7 +7,7 @@ using System.Numerics;
 
 public class SavePurchaseClientTests
 {
-    private NetWorkType network = NetWorkType.TestNet;
+    private NetWorkType network = NetWorkType.ACC_TestNet;
     private Dictionary<NetWorkType, string> AccessKeys;
     private Dictionary<NetWorkType, string> AssetAddresses;
     private SavePurchaseClient client;
@@ -24,11 +24,12 @@ public class SavePurchaseClientTests
     public SavePurchaseClientTests()
     {
         AccessKeys = new Dictionary<NetWorkType, string>();
-        AccessKeys.Add(NetWorkType.TestNet, "0x8acceea5937a8e4bb07abc93a1374264dd9bd2fc384c979717936efe63367276");
+        AccessKeys.Add(NetWorkType.KIOS_TestNet, "0xa0dcffca22f13363ab5d109f3a51ca99754cff4ce4c71dccc0c5df7f6492beee");
+        AccessKeys.Add(NetWorkType.ACC_TestNet, "0x8acceea5937a8e4bb07abc93a1374264dd9bd2fc384c979717936efe63367276");
         AccessKeys.Add(NetWorkType.LocalHost, "0x2c93e943c0d7f6f1a42f53e116c52c40fe5c1b428506dc04b290f2a77580a342");
 
         AssetAddresses = new Dictionary<NetWorkType, string>();
-        AssetAddresses.Add(NetWorkType.TestNet, "0x85EeBb1289c0d0C17eFCbadB40AeF0a1c3b46714");
+        AssetAddresses.Add(NetWorkType.ACC_TestNet, "0x85EeBb1289c0d0C17eFCbadB40AeF0a1c3b46714");
         AssetAddresses.Add(NetWorkType.LocalHost, "0x4501F7aF010Cef3DcEaAfbc7Bfb2B39dE57df54d");
 
         client = new SavePurchaseClient(

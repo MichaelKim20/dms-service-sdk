@@ -23,6 +23,7 @@ class CommonUtilsTest {
             assertEquals("some exception message...", e.getMessage());
         }
     }
+
     @Test
     void signMessage() {
         try {
@@ -39,6 +40,7 @@ class CommonUtilsTest {
             assertEquals("some exception message...", e.getMessage());
         }
     }
+
     @Test
     void GetPhoneHash() {
         try {
@@ -49,6 +51,7 @@ class CommonUtilsTest {
             assertEquals("some exception message...", e.getMessage());
         }
     }
+
     @Test
     void CreateRandomKey() {
         try {

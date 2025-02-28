@@ -5,8 +5,10 @@ import { BytesLike } from "@ethersproject/bytes";
  * Network Type
  */
 export enum NetWorkType {
-    testnet,
-    mainnet,
+    acc_testnet,
+    acc_mainnet,
+    kios_testnet,
+    kios_mainnet,
     localhost,
 }
 

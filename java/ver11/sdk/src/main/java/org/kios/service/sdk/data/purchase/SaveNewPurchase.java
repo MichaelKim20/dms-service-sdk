@@ -9,7 +9,7 @@ public class SaveNewPurchase {
     public String currency;
     public String shopId;
     public String userAccount;
-    public String userPhoneHash;
+    public String userPhone;
     public String sender;
     public String purchaseSignature;
 
@@ -20,7 +20,7 @@ public class SaveNewPurchase {
             String currency,
             String shopId,
             String userAccount,
-            String userPhoneHash,
+            String userPhone,
             String sender,
             String purchaseSignature
     ) {
@@ -30,7 +30,7 @@ public class SaveNewPurchase {
         this.currency = currency;
         this.shopId = shopId;
         this.userAccount = userAccount;
-        this.userPhoneHash = userPhoneHash;
+        this.userPhone = userPhone;
         this.sender = sender;
         this.purchaseSignature = purchaseSignature;
     }

@@ -3,6 +3,21 @@ import { BOACoin, CommonUtils, NetWorkType, SavePurchaseClient } from "../src";
 import * as assert from "assert";
 
 import { BigNumber } from "@ethersproject/bignumber";
+import fs from "fs";
+
+interface IShopData {
+    shopId: string;
+    name: string;
+    currency: string;
+    address: string;
+    privateKey: string;
+}
+
+interface IUserData {
+    phone: string;
+    address: string;
+    privateKey: string;
+}
 
 let _purchaseId = 0;
 
@@ -15,21 +30,25 @@ function getPurchaseId(): string {
 
 describe("Test of ProviderClient", function () {
     this.timeout(1000 * 60 * 5);
-    const network: NetWorkType = NetWorkType.testnet;
+    const network: NetWorkType = NetWorkType.acc_testnet;
     const AccessKeys: Map<number, string> = new Map([
-        [NetWorkType.testnet, "0x8acceea5937a8e4bb07abc93a1374264dd9bd2fc384c979717936efe63367276"],
+        [NetWorkType.kios_testnet, "0xa0dcffca22f13363ab5d109f3a51ca99754cff4ce4c71dccc0c5df7f6492beee"],
+        [NetWorkType.acc_testnet, "0x8acceea5937a8e4bb07abc93a1374264dd9bd2fc384c979717936efe63367276"],
         [NetWorkType.localhost, "0x2c93e943c0d7f6f1a42f53e116c52c40fe5c1b428506dc04b290f2a77580a342"],
     ]);
     const AssetAddresses: Map<number, string> = new Map([
-        [NetWorkType.testnet, "0x85EeBb1289c0d0C17eFCbadB40AeF0a1c3b46714"],
+        [NetWorkType.kios_testnet, "0x153f2340807370855092D04E0e0abe4f2b634240"],
+        [NetWorkType.acc_testnet, "0x85EeBb1289c0d0C17eFCbadB40AeF0a1c3b46714"],
         [NetWorkType.localhost, "0x4501F7aF010Cef3DcEaAfbc7Bfb2B39dE57df54d"],
     ]);
 
+    const shops: IShopData[] = JSON.parse(fs.readFileSync("./tests/data/shops.json", "utf8"));
+    const users: IUserData[] = JSON.parse(fs.readFileSync("./tests/data/users.json", "utf8"));
     let savePurchaseClient: SavePurchaseClient;
     const privateKeyOfCollector = AccessKeys.get(network) || "";
     const addressOfAsset = AssetAddresses.get(network) || "";
-    const shopId = "0x0001be96d74202df38fd21462ffcef10dfe0fcbd7caa3947689a3903e8b6b874";
-    const userAccount = "0x64D111eA9763c93a003cef491941A011B8df5a49";
+    const shopId = shops[0].shopId;
+    const userAccount = users[0].address;
     const userPhone = "";
     let balance0: BigNumber;
     let balance1: BigNumber;

@@ -13,6 +13,21 @@ import { PaymentClientForShop } from "./helper/PaymentClientForShop";
 import { PaymentClientForUser } from "./helper/PaymentClientForUser";
 
 import * as assert from "assert";
+import fs from "fs";
+
+interface IShopData {
+    shopId: string;
+    name: string;
+    currency: string;
+    address: string;
+    privateKey: string;
+}
+
+interface IUserData {
+    phone: string;
+    address: string;
+    privateKey: string;
+}
 
 let _purchaseId = 0;
 function getPurchaseId(): string {
@@ -45,24 +60,20 @@ describe("Test of PaymentClient", function () {
     let userClient: PaymentClientForUser;
     let shopClient: PaymentClientForShop;
     let eventCollector: TaskEventCollector;
-    const network: NetWorkType = NetWorkType.testnet;
+    const network: NetWorkType = NetWorkType.acc_testnet;
     const AccessKeys: Map<number, string> = new Map([
-        [NetWorkType.testnet, "0x8acceea5937a8e4bb07abc93a1374264dd9bd2fc384c979717936efe63367276"],
+        [NetWorkType.kios_testnet, "0xa0dcffca22f13363ab5d109f3a51ca99754cff4ce4c71dccc0c5df7f6492beee"],
+        [NetWorkType.acc_testnet, "0x8acceea5937a8e4bb07abc93a1374264dd9bd2fc384c979717936efe63367276"],
         [NetWorkType.localhost, "0x2c93e943c0d7f6f1a42f53e116c52c40fe5c1b428506dc04b290f2a77580a342"],
     ]);
+    const shops: IShopData[] = JSON.parse(fs.readFileSync("./tests/data/shops.json", "utf8"));
+    const users: IUserData[] = JSON.parse(fs.readFileSync("./tests/data/users.json", "utf8"));
 
     before("Create Client for Payment", async () => {
         const privateKeyForPayment = AccessKeys.get(network) || "";
         paymentClient = new PaymentClient(network, privateKeyForPayment);
-        userClient = new PaymentClientForUser(
-            network,
-            "0x70438bc3ed02b5e4b76d496625cb7c06d6b7bf4362295b16fdfe91a046d4586c" // 0x64D111eA9763c93a003cef491941A011B8df5a49s
-        );
-        shopClient = new PaymentClientForShop(
-            network,
-            "0xa237d68cbb66fd5f76e7b321156c46882546ad87d662dec8b82703ac31efbf0a", // 0xafFe745418Ad24c272175e5B58610A8a35e2EcDa
-            "0x0001be96d74202df38fd21462ffcef10dfe0fcbd7caa3947689a3903e8b6b874"
-        );
+        userClient = new PaymentClientForUser(network, users[0].privateKey);
+        shopClient = new PaymentClientForShop(network, shops[0].privateKey, shops[0].shopId);
         eventCollector = new TaskEventCollector(paymentClient, new PaymentEventListener());
     });
 

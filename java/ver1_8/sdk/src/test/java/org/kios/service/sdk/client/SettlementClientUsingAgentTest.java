@@ -22,7 +22,7 @@ import java.util.Hashtable;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class SettlementClientUsingAgentTest {
-    private final NetWorkType network = NetWorkType.testnet;
+    private final NetWorkType network = NetWorkType.acc_testnet;
     private Hashtable<NetWorkType, String> AccessKeys;
     private Hashtable<NetWorkType, String> AssetAddresses;
     private ArrayList<ShopData> shops;
@@ -43,10 +43,10 @@ class SettlementClientUsingAgentTest {
         AccessKeys = new Hashtable<NetWorkType, String>();
         AssetAddresses = new Hashtable<NetWorkType, String>();
 
-        AccessKeys.put(NetWorkType.testnet, "0x8acceea5937a8e4bb07abc93a1374264dd9bd2fc384c979717936efe63367276");
+        AccessKeys.put(NetWorkType.acc_testnet, "0x8acceea5937a8e4bb07abc93a1374264dd9bd2fc384c979717936efe63367276");
         AccessKeys.put(NetWorkType.localhost, "0x2c93e943c0d7f6f1a42f53e116c52c40fe5c1b428506dc04b290f2a77580a342");
 
-        AssetAddresses.put(NetWorkType.testnet, "0x85EeBb1289c0d0C17eFCbadB40AeF0a1c3b46714");
+        AssetAddresses.put(NetWorkType.acc_testnet, "0x85EeBb1289c0d0C17eFCbadB40AeF0a1c3b46714");
         AssetAddresses.put(NetWorkType.localhost, "0x4501F7aF010Cef3DcEaAfbc7Bfb2B39dE57df54d");
 
         shops = new ArrayList<ShopData>();

@@ -23,7 +23,7 @@ import org.kios.service.sdk.data.payment.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class SettlementClientTest {
-    private final NetWorkType network = NetWorkType.testnet;
+    private final NetWorkType network = NetWorkType.acc_testnet;
     private Hashtable<NetWorkType, String> AccessKeys;
     private Hashtable<NetWorkType, String> AssetAddresses;
     private ArrayList<ShopData> shops;
@@ -41,10 +41,10 @@ class SettlementClientTest {
         AccessKeys = new Hashtable<NetWorkType, String>();
         AssetAddresses = new Hashtable<NetWorkType, String>();
 
-        AccessKeys.put(NetWorkType.testnet, "0x8acceea5937a8e4bb07abc93a1374264dd9bd2fc384c979717936efe63367276");
+        AccessKeys.put(NetWorkType.acc_testnet, "0x8acceea5937a8e4bb07abc93a1374264dd9bd2fc384c979717936efe63367276");
         AccessKeys.put(NetWorkType.localhost, "0x2c93e943c0d7f6f1a42f53e116c52c40fe5c1b428506dc04b290f2a77580a342");
 
-        AssetAddresses.put(NetWorkType.testnet, "0x85EeBb1289c0d0C17eFCbadB40AeF0a1c3b46714");
+        AssetAddresses.put(NetWorkType.acc_testnet, "0x85EeBb1289c0d0C17eFCbadB40AeF0a1c3b46714");
         AssetAddresses.put(NetWorkType.localhost, "0x4501F7aF010Cef3DcEaAfbc7Bfb2B39dE57df54d");
 
         shops = new ArrayList<ShopData>();
@@ -94,28 +94,27 @@ class SettlementClientTest {
             // Save New Purchase
             System.out.println("[ Save New Purchase ]");
             ResponseSavePurchase res1 = savePurchaseClient.saveNewPurchase(
-                CommonUtils.getSamplePurchaseId(),
-                CommonUtils.getTimeStamp(),
-                0,
-                "100000000",
-                "100000000",
-                "php",
+                    CommonUtils.getSamplePurchaseId(),
+                    CommonUtils.getTimeStamp(),
+                    0,
+                    "100000000",
+                    "100000000",
+                    "php",
                     purchaseShopId,
-                userAccount,
-                "",
-                new PurchaseDetail[]{ new PurchaseDetail("2020051310000000", "100000000", 10) }
+                    userAccount,
+                    "",
+                    new PurchaseDetail[]{new PurchaseDetail("2020051310000000", "100000000", 10)}
             );
             System.out.printf("  - type: %d, sequence: %s, purchaseId: %s\n", res1.type, res1.sequence, res1.purchaseId);
 
             // Waiting...
             System.out.println("[ Waiting for providing... ]");
             long t1 = CommonUtils.getTimeStamp();
-            while(true) {
+            while (true) {
                 UserBalance balance2 = savePurchaseClient.getBalanceAccount(userAccount);
                 if (balance2.point.balance.equals(balance1.point.balance.add(Amount.make("10000000").getValue()))) {
                     break;
-                }
-                else if (CommonUtils.getTimeStamp() - t1 > 120) {
+                } else if (CommonUtils.getTimeStamp() - t1 > 120) {
                     System.out.println("Time out for providing... ");
                     break;
                 }
@@ -226,8 +225,7 @@ class SettlementClientTest {
     void Settlement02_RemoveManager() {
         System.out.println("[ Settlement02_RemoveManager ]");
         try {
-            for (ShopData shop : shops)
-            {
+            for (ShopData shop : shops) {
                 SettlementClientForShop shopClient = new SettlementClientForShop(network, shop.privateKey, shop.shopId);
                 shopClient.removeSettlementManager();
             }
@@ -239,8 +237,7 @@ class SettlementClientTest {
     void Settlement03_SetManager() {
         System.out.println("[ Settlement03_SetManager ]");
         try {
-            for (ShopData shop : activeShops)
-            {
+            for (ShopData shop : activeShops) {
                 SettlementClientForShop shopClient = new SettlementClientForShop(network, shop.privateKey, shop.shopId);
                 shopClient.setSettlementManager(settlementClientForManager.getShopId());
             }
@@ -282,8 +279,7 @@ class SettlementClientTest {
     void Settlement07_CheckRefund() {
         System.out.println("[ Settlement07_CheckRefund ]");
         try {
-            for (ShopData shop : activeShops)
-            {
+            for (ShopData shop : activeShops) {
                 SettlementClientForShop shopClient = new SettlementClientForShop(network, shop.privateKey, shop.shopId);
                 ShopRefundableData res = shopClient.getRefundable();
                 Assertions.assertEquals(res.refundableAmount, BigInteger.ZERO);
@@ -296,7 +292,7 @@ class SettlementClientTest {
     void Settlement08_RefundOfManager() {
         System.out.println("[ Settlement08_RefundOfManager ]");
         try {
-            ShopRefundableData refundableData =  settlementClient.getRefundable();
+            ShopRefundableData refundableData = settlementClient.getRefundable();
             BigInteger refundableAmount = refundableData.refundableAmount;
             BigInteger refundableToken = refundableData.refundableToken;
 
@@ -333,12 +329,11 @@ class SettlementClientTest {
             settlementClient.withdraw(balanceOfToken);
 
             long t1 = CommonUtils.getTimeStamp();
-            while(true) {
+            while (true) {
                 BigInteger balanceMainChain2 = settlementClient.getBalanceOfMainChainToken(accountOfShop);
                 if (balanceMainChain2.equals(balanceMainChain1.add(balanceOfToken).subtract(chainInfo.network.loyaltyBridgeFee))) {
                     break;
-                }
-                else if (CommonUtils.getTimeStamp() - t1 > 120) {
+                } else if (CommonUtils.getTimeStamp() - t1 > 120) {
                     System.out.println("Time out for providing... ");
                     break;
                 }

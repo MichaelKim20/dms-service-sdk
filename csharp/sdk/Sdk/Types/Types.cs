@@ -5,8 +5,10 @@ namespace Kios.Service.Sdk.Types;
 
 public enum NetWorkType
 {
-    MainNet,
-    TestNet,
+    ACC_MainNet,
+    ACC_TestNet,
+    KIOS_MainNet,
+    KIOS_TestNet,
     LocalHost
 }
 

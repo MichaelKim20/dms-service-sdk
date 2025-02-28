@@ -44,8 +44,8 @@ public class PaymentClient extends Client {
     /**
      * It calculates the amount required for payment.
      * @param account   User's wallet address or temporary address
-     * @param amount    Purchase amount
-     * @param currency  Currency symbol (case letter)
+     * @param amount    Purchase amount (info. decimals are 18)
+     * @param currency  Currency symbol
      */
     public PaymentInfo getPaymentInfo(@NotNull String account, BigInteger amount, String currency) throws Exception {
         URI uri = new URI(String.format("%s/v2/payment/info?account=%s&amount=%s&currency=%s", relayEndpoint, account.trim(), amount.toString(), currency.trim()));

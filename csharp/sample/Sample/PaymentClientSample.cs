@@ -18,13 +18,13 @@ public class PaymentClientSample
     public PaymentClientSample()
     {
         var privateKeyForPayment = "0x8acceea5937a8e4bb07abc93a1374264dd9bd2fc384c979717936efe63367276";
-        _paymentClient = new PaymentClient(NetWorkType.TestNet, privateKeyForPayment);
+        _paymentClient = new PaymentClient(NetWorkType.ACC_TestNet, privateKeyForPayment);
         var listener = new TestEventListener();
         _collector = new TaskEventCollector(_paymentClient, listener);
         _collector.Start();
-        _userClient = new PaymentClientForUser(NetWorkType.TestNet,
+        _userClient = new PaymentClientForUser(NetWorkType.ACC_TestNet,
             "0x70438bc3ed02b5e4b76d496625cb7c06d6b7bf4362295b16fdfe91a046d4586c");
-        _shopClient = new PaymentClientForShop(NetWorkType.TestNet,
+        _shopClient = new PaymentClientForShop(NetWorkType.ACC_TestNet,
             "0xa237d68cbb66fd5f76e7b321156c46882546ad87d662dec8b82703ac31efbf0a",
             "0x0001be96d74202df38fd21462ffcef10dfe0fcbd7caa3947689a3903e8b6b874");
     }

@@ -5,7 +5,7 @@ using Types;
 
 public class ClientTests
 {
-    private Client client = new(NetWorkType.TestNet);
+    private Client client = new(NetWorkType.ACC_TestNet);
 
     [SetUp]
     public void Setup()

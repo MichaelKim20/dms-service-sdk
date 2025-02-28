@@ -4,19 +4,25 @@ import * as assert from "assert";
 
 import { BigNumber } from "@ethersproject/bignumber";
 import { AddressZero } from "@ethersproject/constants";
+import fs from "fs";
+
+interface IUserData {
+    phone: string;
+    address: string;
+    privateKey: string;
+}
 
 describe("Test of ProviderClient", function () {
     this.timeout(1000 * 60 * 5);
     let providerClient: ProviderClient;
     let agentClient: ProviderClient;
-    const network: NetWorkType = NetWorkType.testnet;
+    const network: NetWorkType = NetWorkType.acc_testnet;
+
+    const users: IUserData[] = JSON.parse(fs.readFileSync("./tests/data/users.json", "utf8"));
 
     before(() => {
-        providerClient = new ProviderClient(
-            network,
-            "0x70438bc3ed02b5e4b76d496625cb7c06d6b7bf4362295b16fdfe91a046d4586c"
-        );
-        agentClient = new ProviderClient(network, "0x44868157d6d3524beb64c6ae41ee6c879d03c19a357dadb038fefea30e23cbab");
+        providerClient = new ProviderClient(network, users[0].privateKey);
+        agentClient = new ProviderClient(network, users[1].privateKey);
     });
 
     it("Check Provider", async () => {

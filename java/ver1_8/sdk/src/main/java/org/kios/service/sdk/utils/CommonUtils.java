@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.kios.service.sdk.data.ClientKey;
+import org.kios.service.sdk.data.NetWorkType;
 
 public class CommonUtils {
     @NotNull
@@ -364,5 +365,43 @@ public class CommonUtils {
         ECKeyPair keyPair = Keys.createEcKeyPair();
         Credentials credentials = Credentials.create(keyPair);
         return new ClientKey(credentials.getAddress(), "0x"+keyPair.getPrivateKey().toString(16));
+    }
+
+    public static NetWorkType getNetWorkType(String shopId) {
+        if (shopId == null || shopId.length() < 5) {
+            return NetWorkType.kios_mainnet;
+        }
+        String prefix = shopId.substring(0, 6);
+        switch (prefix) {
+            case "0x0001":
+                return NetWorkType.acc_testnet;
+            case "0x0002":
+                return NetWorkType.acc_mainnet;
+            case "0x0003":
+                return NetWorkType.kios_testnet;
+            default:
+                return NetWorkType.kios_mainnet;
+        }
+    }
+
+    public static String getDefaultCurrencySymbol(NetWorkType netWorkType) {
+        if ((netWorkType == NetWorkType.acc_testnet) || (netWorkType == NetWorkType.acc_mainnet)) {
+            return "php";
+        } else {
+            return "krw";
+        }
+    }
+
+    public static String getShopIdPrefix(NetWorkType netWorkType) {
+        switch (netWorkType) {
+            case acc_testnet:
+                return "0x0001";
+            case acc_mainnet:
+                return "0x0002";
+            case kios_testnet:
+                return "0x0003";
+            default:
+                return "0x0004";
+        }
     }
 }

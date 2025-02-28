@@ -33,18 +33,27 @@ public class Client {
 
     /**
      * Constructor
-     * @param network Type of network (mainnet, testnet, localhost)
+     * @param network Type of network (acc_mainnet, acc_testnet, kios_testnet, kios_mainnet, localhost)
      */
     public Client(NetWorkType network) {
         if (network == NetWorkType.localhost) {
             relayEndpoint = "http://127.0.0.1:7070";
             saveEndpoint = "http://127.0.0.1:3030";
-        } else if (network == NetWorkType.mainnet) {
+        } else if (network == NetWorkType.acc_mainnet) {
             relayEndpoint = "https://relay.main.acccoin.io";
             saveEndpoint = "https://save.main.acccoin.io";
-        } else {
+        } else if (network == NetWorkType.acc_testnet) {
             relayEndpoint = "https://relay.test.acccoin.io";
             saveEndpoint = "https://save.test.acccoin.io";
+        } else if (network == NetWorkType.kios_mainnet) {
+            relayEndpoint = "https://relay.main.kioscoin.io";
+            saveEndpoint = "https://save.main.kioscoin.io";
+        } else if (network == NetWorkType.kios_testnet) {
+            relayEndpoint = "https://relay.test.kioscoin.io";
+            saveEndpoint = "https://save.test.kioscoin.io";
+        } else {
+            relayEndpoint = "https://relay.main.kioscoin.io";
+            saveEndpoint = "https://save.main.kioscoin.io";
         }
         chainId = 0;
 

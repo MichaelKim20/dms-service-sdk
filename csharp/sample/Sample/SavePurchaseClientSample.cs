@@ -8,7 +8,7 @@ using System.Numerics;
 public class SavePurchaseClientSample
 {
     private SavePurchaseClient client = new(
-        NetWorkType.TestNet,
+        NetWorkType.ACC_TestNet,
         "0x8acceea5937a8e4bb07abc93a1374264dd9bd2fc384c979717936efe63367276",
         "0x85EeBb1289c0d0C17eFCbadB40AeF0a1c3b46714"
     );

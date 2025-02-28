@@ -23,7 +23,7 @@ export class Client {
 
     /**
      * Constructor
-     * @param network Type of network (mainnet, testnet, localhost)
+     * @param network Type of network (acc_mainnet, acc_testnet, kios_mainnet, kios_testnet, localhost)
      */
     constructor(network: NetWorkType) {
         if (network === NetWorkType.localhost) {
@@ -31,15 +31,30 @@ export class Client {
                 relay: "http://127.0.0.1:7070",
                 save: "http://127.0.0.1:3030",
             };
-        } else if (network === NetWorkType.mainnet) {
+        } else if (network === NetWorkType.acc_mainnet) {
             this.endpoints = {
                 relay: "https://relay.main.acccoin.io",
                 save: "https://save.main.acccoin.io",
             };
-        } else {
+        } else if (network === NetWorkType.acc_testnet) {
             this.endpoints = {
                 relay: "https://relay.test.acccoin.io",
                 save: "https://save.test.acccoin.io",
+            };
+        } else if (network === NetWorkType.kios_mainnet) {
+            this.endpoints = {
+                relay: "https://relay.main.kioscoin.io",
+                save: "https://save.main.kioscoin.io",
+            };
+        } else if (network === NetWorkType.kios_testnet) {
+            this.endpoints = {
+                relay: "https://relay.test.kioscoin.io",
+                save: "https://save.test.kioscoin.io",
+            };
+        } else {
+            this.endpoints = {
+                relay: "https://relay.main.kioscoin.io",
+                save: "https://save.main.kioscoin.io",
             };
         }
     }
